@@ -65,10 +65,7 @@ else:
         df = df[df["derived_race"] != "Free Form Text Only"]
         df = df[df["derived_ethnicity"] != "Free Form Text Only"]
         return df
-    if "processed_data.csv" not in st.session_state:
-        df = None
-    else:
-        df = load_data()
+    df = load_data()
 
 features = ['derived_ethnicity', 'derived_race', 'derived_sex', 'loan_type',
             'loan_purpose', 'lien_status', 'loan_amount', 'loan_to_value_ratio',
