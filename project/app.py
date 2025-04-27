@@ -51,20 +51,21 @@ if uploaded_file is not None:
         st.session_state["raw_df"] = pd.read_csv(uploaded_file)
         st.session_state["processed_df"] = data_processing.process_data(
             st.session_state["raw_df"])
-    st.subheader("Raw Data Preview")
-    st.dataframe(st.session_state["raw_df"].head())
-    st.success("Data processed successfully!")
-    st.subheader("Processed Data Preview")
-    st.dataframe(st.session_state["processed_df"].head())
-    df = st.session_state["processed_df"]  # use stored  processed data
+    df = st.session_state["processed_df"]  # use stored processed data
 else:
-    # Existing caching mechanism loads processed_data.csv
     @st.cache_data
     def load_data():
-        df = pd.read_csv("processed_data.csv", index_col=0)
-        df = df[df["derived_race"] != "Free Form Text Only"]
-        df = df[df["derived_ethnicity"] != "Free Form Text Only"]
-        return df
+        try:
+            df = pd.read_csv("processed_data.csv", index_col=0)
+            df = df[df["derived_race"] != "Free Form Text Only"]
+            df = df[df["derived_ethnicity"] != "Free Form Text Only"]
+            return df
+        except FileNotFoundError:
+            st.error(
+                "No data available. Please download a state's data from "
+                "[this link](https://ffiec.cfpb.gov/data-browser/data/2023?category=states) (max file size: 200Mb) and upload the CSV file via the sidebar. The app will cleanse the data and generate visualizations."
+            )
+            st.stop()
     df = load_data()
 
 features = ['derived_ethnicity', 'derived_race', 'derived_sex', 'loan_type',
@@ -116,6 +117,14 @@ section = st.sidebar.radio("Go to", [
 # Main content
 if section == "Background":
     st.title("Background")
+    if "raw_df" in st.session_state and "processed_df" in st.session_state:
+        st.subheader("Raw Data Preview")
+        st.dataframe(st.session_state["raw_df"].head())
+        st.subheader("Processed Data Preview")
+        st.dataframe(st.session_state["processed_df"].head())
+    else:
+        st.info("No data uploaded yet. Please download a state's data from "
+                "[this link](https://ffiec.cfpb.gov/data-browser/data/2023?category=states) (max file size: 200Mb) and upload the CSV file via the sidebar. The app will cleanse the data and generate visualizations.")
     st.markdown("""
     Homeownership is a key component of the American Dream, not only providing stability and pride but also helping families build generational wealth. Structural injustice, however, permeates the housing market, strongly disfavoring marginalized minority groups such as blacks and Hispanics and intensifying racial inequalities. This injustice is rooted in historical policies like government-initiated segregation and redlining practices, where the Federal Housing Administration (FHA) policies discriminated against minority-centered regions in the housing markets. While overtly discriminatory practices were outlawed by the 1960s, these adverse practices still affect minority communities which plague this country to this day.
 
