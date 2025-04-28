@@ -151,6 +151,24 @@ We use features
 To predict the target variable: **approval status of the loan**. The target variable is binary, where 1 indicates that the loan was approved and 0 indicates that it was not.
 
 We first conduct an exploratory data analysis to understand the data and its distributions. We then build a logistic regression model to predict the approval status of the loan based on the features. Finally, we build an XGBoost model to improve the accuracy of our predictions. The models are evaluated using metrics such as accuracy, precision, recall, and F1 score.
+
+# Data Processing
+1. **Data Source** - we pulled data from [HMDA](https://ffiec.cfpb.gov/data-browser/data/2023?category=states) which contained raw features for ethnicity, race, etc.
+2. **Column Filtering** - we filtered the columns to only include the features we wanted to analyze (the features above).
+3. **Cleaning** - we (1) removed all rows with extraneous values, dropped edge case scenarios, and dropped NaN values out of non-numeric columns.
+4. **Extrapolation** - we used the SimpleImputer to fill in missing values for numeric columns.
+5. **Outlier Removal** - by plotting distributions of all numeric columns, we removed the top 0.5 percent of outliers for each column.
+6. **Encoding** - we used the OneHotEncoder to encode categorical variables and the StandardScaler to scale numeric variables.
+
+# Key Findings
+1. **Approval Rates** - approval rates on average were significantly lower for people of color, especially for Native American, Hispanics, Black, and Pacific Island applications.
+2. **Geographic Disparities** - approval rates were 5 percent higher in the in the southern part of the state, which is more affluent and has a higher percentage of white residents.
+3. **Race Disparities** - holding all else constant, a logistic regression model found that being a people of color is 40 percent less likely to be approved for a loan than a white applicant
+ 
+# Impacts
+1. **Systemic Bias** - the data shows that systemic bias is prevalent in the mortgage lending process, with people of color being less likely to be approved for loans.
+2. **Policy Findings** - the findings of this analysis can be used to inform policy decisions and advocate for more equitable lending practices in the future, and advocate for anti-redlining practices.
+3. **Community Improvement** - by exposing these biases, we aim to empower affected communities and potentially work with nonprofits to help disadvantaged people navigate the mortgage lending process.
     """)
 elif section == "Exploratory Analysis":
     st.title("Exploratory Data Analysis")
